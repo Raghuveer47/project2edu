@@ -14,86 +14,81 @@ export function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-[120px] px-8 bg-[var(--navy)]">
-      <div className="max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-2 gap-16 mb-16">
-          {/* Left: Contact Info */}
+    <section id="contact" className="bg-[var(--navy)] px-5 py-16 sm:px-6 md:px-8 md:py-24 lg:py-[120px]">
+      <div className="mx-auto max-w-[1440px]">
+        <div className="mb-12 grid grid-cols-1 gap-10 md:mb-16 lg:grid-cols-2 lg:gap-16">
           <div>
             <h2
               style={{ fontFamily: 'var(--font-heading)' }}
-              className="text-5xl text-white mb-8"
+              className="mb-8 text-3xl text-white sm:text-4xl lg:text-5xl"
             >
-              Let's Connect
+              Let&apos;s Connect
             </h2>
 
-            <div className="space-y-6">
+            <div className="space-y-5 sm:space-y-6">
               <div className="flex items-start gap-4">
-                <MapPin className="w-6 h-6 text-[var(--yellow)] flex-shrink-0 mt-1" />
+                <MapPin className="mt-1 h-6 w-6 shrink-0 text-[var(--yellow)]" />
                 <div>
                   <p style={{ fontFamily: 'var(--font-body)' }} className="text-white">
                     C2C Tech Solutions Pvt Ltd
                   </p>
-                  <p style={{ fontFamily: 'var(--font-body)' }} className="text-white opacity-80">
+                  <p style={{ fontFamily: 'var(--font-body)' }} className="text-white/80">
                     Vijayawada, Andhra Pradesh, India
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4">
-                <Phone className="w-6 h-6 text-[var(--yellow)]" />
+                <Phone className="h-6 w-6 shrink-0 text-[var(--yellow)]" />
                 <p style={{ fontFamily: 'var(--font-body)' }} className="text-white">
                   +91 XXX XXX XXXX
                 </p>
               </div>
 
-              <div className="flex items-center gap-4">
-                <Mail className="w-6 h-6 text-[var(--yellow)]" />
-                <p style={{ fontFamily: 'var(--font-body)' }} className="text-white">
+              <div className="flex items-start gap-4">
+                <Mail className="mt-0.5 h-6 w-6 shrink-0 text-[var(--yellow)]" />
+                <p
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  className="break-all text-white sm:break-normal"
+                >
                   info@c2ctechsolutions.com
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Right: Contact Form */}
           <div>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <input
-                  type="text"
-                  placeholder="Name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-[var(--yellow)]"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                />
-              </div>
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+              <input
+                type="text"
+                placeholder="Name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/50 focus:border-[var(--yellow)] focus:outline-none"
+                style={{ fontFamily: 'var(--font-body)' }}
+              />
 
-              <div>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-[var(--yellow)]"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                />
-              </div>
+              <input
+                type="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/50 focus:border-[var(--yellow)] focus:outline-none"
+                style={{ fontFamily: 'var(--font-body)' }}
+              />
 
-              <div>
-                <textarea
-                  placeholder="Message"
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  rows={5}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-[var(--yellow)] resize-none"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                />
-              </div>
+              <textarea
+                placeholder="Message"
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                rows={5}
+                className="w-full resize-none rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/50 focus:border-[var(--yellow)] focus:outline-none"
+                style={{ fontFamily: 'var(--font-body)' }}
+              />
 
               <button
                 type="submit"
-                className="bg-[var(--yellow)] text-[var(--navy)] px-8 py-3 rounded-lg hover:bg-[#E0B015] transition-colors w-full"
+                className="w-full rounded-lg bg-[var(--yellow)] px-8 py-3 text-[var(--navy)] transition-colors hover:bg-[#E0B015]"
                 style={{ fontFamily: 'var(--font-body)' }}
               >
                 Send Message
@@ -102,37 +97,42 @@ export function ContactSection() {
           </div>
         </div>
 
-        {/* Footer Bottom */}
-        <div className="border-t border-white/20 pt-8 flex items-center justify-between">
-          <p style={{ fontFamily: 'var(--font-body)' }} className="text-white opacity-60 text-sm">
+        <div className="flex flex-col items-center gap-6 border-t border-white/20 pt-8 text-center lg:flex-row lg:items-center lg:justify-between lg:text-left">
+          <p
+            style={{ fontFamily: 'var(--font-body)' }}
+            className="max-w-sm text-sm text-white/60 sm:max-w-none"
+          >
             © 2026 C2C Tech Solutions Pvt Ltd. All rights reserved.
           </p>
 
-          <div className="flex gap-4">
+          <div className="flex gap-3 sm:gap-4">
             <a
               href="#"
-              className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[var(--yellow)] hover:text-[var(--navy)] transition-colors"
+              aria-label="LinkedIn"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[var(--yellow)] hover:text-[var(--navy)]"
             >
-              <Linkedin className="w-5 h-5" />
+              <Linkedin className="h-5 w-5" />
             </a>
             <a
               href="#"
-              className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[var(--yellow)] hover:text-[var(--navy)] transition-colors"
+              aria-label="Twitter"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[var(--yellow)] hover:text-[var(--navy)]"
             >
-              <Twitter className="w-5 h-5" />
+              <Twitter className="h-5 w-5" />
             </a>
             <a
               href="#"
-              className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[var(--yellow)] hover:text-[var(--navy)] transition-colors"
+              aria-label="Instagram"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[var(--yellow)] hover:text-[var(--navy)]"
             >
-              <Instagram className="w-5 h-5" />
+              <Instagram className="h-5 w-5" />
             </a>
           </div>
 
           <a
             href="https://c2ctechsolutions.com"
             style={{ fontFamily: 'var(--font-body)' }}
-            className="text-[var(--yellow)] hover:underline text-sm"
+            className="text-sm text-[var(--yellow)] hover:underline"
           >
             www.c2ctechsolutions.com
           </a>

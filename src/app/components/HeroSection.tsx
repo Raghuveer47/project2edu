@@ -21,7 +21,7 @@ export function HeroSection() {
           style={{ fontFamily: 'var(--font-heading)' }}
           className="text-4xl md:text-5xl lg:text-6xl text-white mb-6 leading-tight max-w-3xl"
         >
-          From Classroom to Corporate.
+          From Campus to Corporate.
         </h1>
         <p
           style={{ fontFamily: 'var(--font-body)' }}

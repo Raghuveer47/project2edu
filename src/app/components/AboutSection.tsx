@@ -1,6 +1,6 @@
 export function AboutSection() {
   const pillars = [
-    'Classroom to Corporate',
+    'Campus to Corporate',
     'Clients to Conversions',
     'Candidate to Career',
     'Concept to Creation',

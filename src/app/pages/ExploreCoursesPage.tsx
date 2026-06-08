@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { Download, CheckCircle2 } from 'lucide-react';
-import { COURSES } from '../data/courses';
+import { COURSE_CATEGORY_ORDER, getCourseByName, getCoursesByCategory, type CourseCategory } from '../data/courses';
 import {
   downloadCurriculumForCourse,
   getCurriculumForCourse,
@@ -24,11 +24,16 @@ export function ExploreCoursesPage() {
   const [form, setForm] = useState<ApplicationFormData>(emptyForm);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const [courseCategory, setCourseCategory] = useState<CourseCategory | ''>('');
 
   useEffect(() => {
     const courseParam = searchParams.get('course');
     if (courseParam) {
-      setForm((prev) => ({ ...prev, course: courseParam }));
+      const matched = getCourseByName(courseParam);
+      if (matched) {
+        setCourseCategory(matched.category);
+        setForm((prev) => ({ ...prev, course: matched.name }));
+      }
     }
   }, [searchParams]);
 
@@ -37,10 +42,16 @@ export function ExploreCoursesPage() {
     setError('');
   };
 
+  const handleCategoryChange = (category: CourseCategory | '') => {
+    setCourseCategory(category);
+    setForm((prev) => ({ ...prev, course: '' }));
+    setError('');
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.fullName.trim() || !form.email.trim() || !form.phone.trim() || !form.course || !form.qualification.trim()) {
-      setError('Please fill in all required fields.');
+    if (!form.fullName.trim() || !form.email.trim() || !form.phone.trim() || !courseCategory || !form.course || !form.qualification.trim()) {
+      setError('Please fill in all required fields and select a course category and course.');
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
@@ -53,9 +64,14 @@ export function ExploreCoursesPage() {
   };
 
   const selectCourse = (name: string) => {
+    const matched = getCourseByName(name);
+    if (!matched) return;
+    setCourseCategory(matched.category);
     update('course', name);
-    document.getElementById('application-form')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('application-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
+
+  const coursesInCategory = courseCategory ? getCoursesByCategory(courseCategory) : [];
 
   const selectedCurriculum = form.course ? getCurriculumForCourse(form.course) : undefined;
 
@@ -76,8 +92,8 @@ export function ExploreCoursesPage() {
             Explore Courses
           </h1>
           <p style={{ fontFamily: 'var(--font-body)' }} className="text-white/85 text-lg max-w-2xl">
-            Choose a program and submit your application. Curriculum PDFs are available for Data
-            Science with AI, Core Python, and AI Mastery.
+            Choose a program and submit your application. Curriculum PDFs are available for select
+            advanced programs including Data Science & Analytics, Python (Entry Level), and AI & ML.
           </p>
         </div>
       </section>
@@ -90,45 +106,60 @@ export function ExploreCoursesPage() {
           >
             Available Programs
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {COURSES.map((course) => {
-              const Icon = course.icon;
-              const selected = form.course === course.name;
+          <div className="space-y-12">
+            {COURSE_CATEGORY_ORDER.map((category) => {
+              const courses = getCoursesByCategory(category);
               return (
-                <button
-                  key={course.id}
-                  type="button"
-                  onClick={() => selectCourse(course.name)}
-                  className={`text-left bg-white border p-6 rounded-xl transition-all ${
-                    selected
-                      ? 'border-[var(--yellow)] ring-2 ring-[var(--yellow)]/40 shadow-lg'
-                      : 'border-gray-200 hover:border-[var(--yellow)] hover:shadow-md'
-                  }`}
-                >
-                  <Icon className="w-9 h-9 mb-3 text-[var(--navy)]" strokeWidth={1.5} />
+                <div key={category}>
                   <h3
                     style={{ fontFamily: 'var(--font-heading)' }}
-                    className="text-lg text-[var(--navy)] mb-2"
+                    className="mb-5 text-2xl text-[var(--navy)]"
                   >
-                    {course.name}
+                    {category}
                   </h3>
-                  <p
-                    style={{ fontFamily: 'var(--font-body)' }}
-                    className="text-sm text-[var(--navy)]/65 mb-3"
-                  >
-                    {course.summary}
-                  </p>
-                  <span
-                    className={`inline-block px-3 py-1 rounded-full text-xs ${
-                      course.level === 'Beginner'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'bg-purple-100 text-purple-700'
-                    }`}
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
-                    {course.duration} · {course.level}
-                  </span>
-                </button>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {courses.map((course) => {
+                      const Icon = course.icon;
+                      const selected = form.course === course.name;
+                      return (
+                        <button
+                          key={course.id}
+                          type="button"
+                          onClick={() => selectCourse(course.name)}
+                          className={`rounded-xl border p-5 text-left transition-all sm:p-6 ${
+                            selected
+                              ? 'border-[var(--yellow)] shadow-lg ring-2 ring-[var(--yellow)]/40'
+                              : 'border-gray-200 bg-white hover:border-[var(--yellow)] hover:shadow-md'
+                          }`}
+                        >
+                          <Icon className="mb-3 h-9 w-9 text-[var(--navy)]" strokeWidth={1.5} />
+                          <h4
+                            style={{ fontFamily: 'var(--font-heading)' }}
+                            className="mb-2 text-lg text-[var(--navy)]"
+                          >
+                            {course.name}
+                          </h4>
+                          <p
+                            style={{ fontFamily: 'var(--font-body)' }}
+                            className="mb-3 text-sm text-[var(--navy)]/65"
+                          >
+                            {course.summary}
+                          </p>
+                          <span
+                            className={`inline-block rounded-full px-3 py-1 text-xs ${
+                              course.level === 'Beginner'
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-purple-100 text-purple-700'
+                            }`}
+                            style={{ fontFamily: 'var(--font-body)' }}
+                          >
+                            {course.duration} · {course.level}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               );
             })}
           </div>
@@ -148,14 +179,15 @@ export function ExploreCoursesPage() {
               style={{ fontFamily: 'var(--font-body)' }}
               className="text-[var(--navy)]/75 leading-relaxed mb-6"
             >
-              Complete the form below and select your course.
+              Complete the form below. First choose a <strong>course category</strong>, then pick your
+              course from that list.
               {selectedCurriculum ? (
                 <>
                   {' '}
                   After submit, the <strong>curriculum PDF for that course</strong> will download.
                 </>
               ) : (
-                <> Full Stack programs can be applied for now; curriculum PDFs will be added later.</>
+                <> Most courses can be applied for now; curriculum PDFs are available for select programs.</>
               )}
             </p>
             {selectedCurriculum ? (
@@ -173,8 +205,8 @@ export function ExploreCoursesPage() {
               </p>
             ) : (
               <p className="text-[var(--navy)]/70 text-sm" style={{ fontFamily: 'var(--font-body)' }}>
-                Select a course to apply. PDF download is available for Data Science, Core Python,
-                and AI Mastery.
+                Select a course to apply. PDF download is available for Data Science & Analytics,
+                Python (Entry Level), and AI & Machine Learning.
               </p>
             )}
           </div>
@@ -223,23 +255,23 @@ export function ExploreCoursesPage() {
             ) : (
               <form
                 onSubmit={handleSubmit}
-                className="bg-gray-50 border border-gray-200 rounded-2xl p-8 space-y-5"
+                className="space-y-5 rounded-2xl border border-gray-200 bg-gray-50 p-5 sm:p-8"
               >
-                <div className="grid sm:grid-cols-2 gap-5">
+                <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className="block text-sm text-[var(--navy)] mb-1.5" style={{ fontFamily: 'var(--font-body)' }}>
+                    <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
                       Full Name *
                     </label>
                     <input
                       required
                       value={form.fullName}
                       onChange={(e) => update('fullName', e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-[var(--navy)]"
+                      className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[var(--navy)] focus:outline-none"
                       placeholder="Your full name"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[var(--navy)] mb-1.5" style={{ fontFamily: 'var(--font-body)' }}>
+                    <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
                       Email *
                     </label>
                     <input
@@ -247,15 +279,15 @@ export function ExploreCoursesPage() {
                       type="email"
                       value={form.email}
                       onChange={(e) => update('email', e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-[var(--navy)]"
+                      className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[var(--navy)] focus:outline-none"
                       placeholder="you@email.com"
                     />
                   </div>
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-5">
+                <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className="block text-sm text-[var(--navy)] mb-1.5" style={{ fontFamily: 'var(--font-body)' }}>
+                    <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
                       Phone *
                     </label>
                     <input
@@ -263,78 +295,100 @@ export function ExploreCoursesPage() {
                       type="tel"
                       value={form.phone}
                       onChange={(e) => update('phone', e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-[var(--navy)]"
+                      className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[var(--navy)] focus:outline-none"
                       placeholder="+91 XXXXX XXXXX"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[var(--navy)] mb-1.5" style={{ fontFamily: 'var(--font-body)' }}>
+                    <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
                       City
                     </label>
                     <input
                       value={form.city}
                       onChange={(e) => update('city', e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-[var(--navy)]"
+                      className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[var(--navy)] focus:outline-none"
                       placeholder="Vijayawada"
                     />
                   </div>
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-5">
+                <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className="block text-sm text-[var(--navy)] mb-1.5" style={{ fontFamily: 'var(--font-body)' }}>
+                    <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
+                      Course Category *
+                    </label>
+                    <select
+                      required
+                      value={courseCategory}
+                      onChange={(e) => handleCategoryChange(e.target.value as CourseCategory | '')}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 focus:border-[var(--navy)] focus:outline-none"
+                    >
+                      <option value="">Select category</option>
+                      {COURSE_CATEGORY_ORDER.map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
                       Course *
                     </label>
                     <select
                       required
                       value={form.course}
+                      disabled={!courseCategory}
                       onChange={(e) => update('course', e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-[var(--navy)] bg-white"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 focus:border-[var(--navy)] focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
                     >
-                      <option value="">Select a course</option>
-                      {COURSES.map((c) => (
+                      <option value="">
+                        {courseCategory ? 'Select course' : 'Select a category first'}
+                      </option>
+                      {coursesInCategory.map((c) => (
                         <option key={c.id} value={c.name}>
                           {c.name}
                         </option>
                       ))}
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-sm text-[var(--navy)] mb-1.5" style={{ fontFamily: 'var(--font-body)' }}>
-                      Qualification *
-                    </label>
-                    <input
-                      required
-                      value={form.qualification}
-                      onChange={(e) => update('qualification', e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-[var(--navy)]"
-                      placeholder="B.Tech / B.Sc / Diploma"
-                    />
-                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm text-[var(--navy)] mb-1.5" style={{ fontFamily: 'var(--font-body)' }}>
+                  <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
+                    Qualification *
+                  </label>
+                  <input
+                    required
+                    value={form.qualification}
+                    onChange={(e) => update('qualification', e.target.value)}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[var(--navy)] focus:outline-none sm:max-w-md"
+                    placeholder="B.Tech / B.Sc / Diploma"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
                     Message (optional)
                   </label>
                   <textarea
                     rows={4}
                     value={form.message}
                     onChange={(e) => update('message', e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-[var(--navy)] resize-none"
+                    className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 focus:border-[var(--navy)] focus:outline-none"
                     placeholder="Tell us about your goals or preferred batch timing"
                   />
                 </div>
 
                 {error && (
-                  <p className="text-red-600 text-sm" style={{ fontFamily: 'var(--font-body)' }}>
+                  <p className="text-sm text-red-600" style={{ fontFamily: 'var(--font-body)' }}>
                     {error}
                   </p>
                 )}
 
                 <button
                   type="submit"
-                  className="w-full sm:w-auto bg-[var(--yellow)] text-[var(--navy)] px-8 py-3.5 rounded-lg hover:bg-[#E0B015] transition-colors font-medium"
+                  className="w-full rounded-lg bg-[var(--yellow)] px-8 py-3.5 font-medium text-[var(--navy)] transition-colors hover:bg-[#E0B015] sm:w-auto"
                   style={{ fontFamily: 'var(--font-body)' }}
                 >
                   {selectedCurriculum ? 'Submit & download curriculum' : 'Submit application'}

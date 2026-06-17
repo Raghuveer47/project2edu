@@ -93,7 +93,7 @@ export function ExploreCoursesPage() {
           </h1>
           <p style={{ fontFamily: 'var(--font-body)' }} className="text-white/85 text-lg max-w-2xl">
             Choose a program and submit your application. Curriculum PDFs are available for select
-            advanced programs including Data Science & Analytics, Python (Entry Level), and AI & ML.
+            advanced programs including Data Science & Analytics, Python, and AI & ML.
           </p>
         </div>
       </section>
@@ -141,20 +141,10 @@ export function ExploreCoursesPage() {
                           </h4>
                           <p
                             style={{ fontFamily: 'var(--font-body)' }}
-                            className="mb-3 text-sm text-[var(--navy)]/65"
+                            className="text-sm text-[var(--navy)]/65"
                           >
                             {course.summary}
                           </p>
-                          <span
-                            className={`inline-block rounded-full px-3 py-1 text-xs ${
-                              course.level === 'Beginner'
-                                ? 'bg-blue-100 text-blue-700'
-                                : 'bg-purple-100 text-purple-700'
-                            }`}
-                            style={{ fontFamily: 'var(--font-body)' }}
-                          >
-                            {course.duration} · {course.level}
-                          </span>
                         </button>
                       );
                     })}
@@ -206,7 +196,7 @@ export function ExploreCoursesPage() {
             ) : (
               <p className="text-[var(--navy)]/70 text-sm" style={{ fontFamily: 'var(--font-body)' }}>
                 Select a course to apply. PDF download is available for Data Science & Analytics,
-                Python (Entry Level), and AI & Machine Learning.
+                Python, and AI & Machine Learning.
               </p>
             )}
           </div>
@@ -296,7 +286,7 @@ export function ExploreCoursesPage() {
                       value={form.phone}
                       onChange={(e) => update('phone', e.target.value)}
                       className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[var(--navy)] focus:outline-none"
-                      placeholder="+91 XXXXX XXXXX"
+                      placeholder="+91 70931 82525"
                     />
                   </div>
                   <div>

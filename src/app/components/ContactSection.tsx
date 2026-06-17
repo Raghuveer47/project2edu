@@ -32,17 +32,25 @@ export function ContactSection() {
                   <p style={{ fontFamily: 'var(--font-body)' }} className="text-white">
                     C2C Tech Solutions Pvt Ltd
                   </p>
-                  <p style={{ fontFamily: 'var(--font-body)' }} className="text-white/80">
-                    Vijayawada, Andhra Pradesh, India
+                  <p style={{ fontFamily: 'var(--font-body)' }} className="text-white/80 leading-relaxed">
+                    Plot No. 301, 3rd Floor, Sultan Plaza,
+                    <br />
+                    9th Avenue, Benz Circle,
+                    <br />
+                    Vijayawada - 520010
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4">
                 <Phone className="h-6 w-6 shrink-0 text-[var(--yellow)]" />
-                <p style={{ fontFamily: 'var(--font-body)' }} className="text-white">
-                  +91 XXX XXX XXXX
-                </p>
+                <a
+                  href="tel:+917093182525"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  className="text-white hover:text-[var(--yellow)] transition-colors"
+                >
+                  +91 70931 82525
+                </a>
               </div>
 
               <div className="flex items-start gap-4">

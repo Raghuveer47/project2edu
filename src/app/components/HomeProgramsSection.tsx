@@ -86,15 +86,9 @@ export function HomeProgramsSection() {
                     >
                       <p
                         style={{ fontFamily: 'var(--font-heading)' }}
-                        className="mb-1 text-base font-medium text-[var(--navy)]"
+                        className="text-base font-medium text-[var(--navy)]"
                       >
                         {course.name}
-                      </p>
-                      <p
-                        style={{ fontFamily: 'var(--font-body)' }}
-                        className="text-xs text-[var(--navy)]/55"
-                      >
-                        {course.duration} · {course.level}
                       </p>
                     </Link>
                   ))}

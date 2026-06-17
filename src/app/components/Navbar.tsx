@@ -7,8 +7,7 @@ const navLinks = [
   { to: '/about', label: 'About' },
   { to: '/services', label: 'Services' },
   { to: '/products', label: 'Products' },
-  { to: '/explore-courses', label: 'Explore Courses' },
-  { to: '/training', label: 'Training' },
+  { to: '/explore-courses', label: 'Courses' },
   { to: '/contact', label: 'Contact' },
 ];
 
@@ -56,7 +55,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-6 xl:gap-8 lg:flex">
+        <div className="hidden items-center gap-6 lg:flex xl:gap-8">
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -73,29 +72,19 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Link
-            to="/explore-courses"
-            className="hidden rounded-lg bg-[var(--yellow)] px-4 py-2 text-sm text-[var(--navy)] transition-colors hover:bg-[#E0B015] sm:inline-flex lg:px-6 lg:py-2.5 lg:text-base"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
-            Enroll Now
-          </Link>
-
-          <button
-            type="button"
-            onClick={() => setMenuOpen((open) => !open)}
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={menuOpen}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-[var(--navy)] lg:hidden"
-          >
-            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-[var(--navy)] lg:hidden"
+        >
+          {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
       </div>
 
       {menuOpen && (
-        <div className="border-t border-gray-100 bg-white px-4 py-4 shadow-lg lg:hidden sm:px-6">
+        <div className="border-t border-gray-100 bg-white px-4 py-4 shadow-lg sm:px-6 lg:hidden">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
@@ -104,20 +93,13 @@ export function Navbar() {
                 style={{ fontFamily: 'var(--font-body)' }}
                 className={`rounded-lg px-3 py-3 text-base transition-colors ${
                   isActive(link.to)
-                    ? 'bg-[var(--yellow)]/15 text-[var(--navy)] font-medium'
+                    ? 'bg-[var(--yellow)]/15 font-medium text-[var(--navy)]'
                     : 'text-[var(--navy)] hover:bg-gray-50'
                 }`}
               >
                 {link.label}
               </Link>
             ))}
-            <Link
-              to="/explore-courses"
-              className="mt-2 rounded-lg bg-[var(--yellow)] px-4 py-3 text-center text-[var(--navy)] transition-colors hover:bg-[#E0B015]"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              Enroll Now
-            </Link>
           </div>
         </div>
       )}

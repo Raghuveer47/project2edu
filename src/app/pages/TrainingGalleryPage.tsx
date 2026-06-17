@@ -1,6 +1,5 @@
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import receptionHero from '../../assets/images/c2c-reception-hero.jpeg';
-import training1 from '../../imports/WhatsApp_Image_2026-06-03_at_22.26.04.jpeg';
 import training2 from '../../imports/WhatsApp_Image_2026-06-03_at_22.26.40.jpeg';
 import ceremony1 from '../../imports/WhatsApp_Image_2026-06-03_at_22.34.19.jpeg';
 import ceremony2 from '../../imports/WhatsApp_Image_2026-06-03_at_22.34.20.jpeg';
@@ -15,11 +14,6 @@ export function TrainingGalleryPage() {
       url: receptionHero,
       title: 'C2C Tech Solutions Reception',
       category: 'Office',
-    },
-    {
-      url: training1,
-      title: 'Interactive Training Session',
-      category: 'Classroom Training',
     },
     {
       url: training2,

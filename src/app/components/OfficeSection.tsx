@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import receptionHero from '../../assets/images/c2c-reception-hero.jpeg';
-import training1 from '../../imports/WhatsApp_Image_2026-06-03_at_22.26.04.jpeg';
-import training2 from '../../imports/WhatsApp_Image_2026-06-03_at_22.26.40.jpeg';
 import ceremony1 from '../../imports/WhatsApp_Image_2026-06-03_at_22.34.19.jpeg';
 import ceremony2 from '../../imports/WhatsApp_Image_2026-06-03_at_22.34.20.jpeg';
 
@@ -11,16 +9,8 @@ const officePhotos = [
     caption: 'OFFICE RECEPTION',
   },
   {
-    url: training1,
-    caption: 'TRAINING SESSION',
-  },
-  {
     url: ceremony1,
     caption: 'INAUGURATION',
-  },
-  {
-    url: training2,
-    caption: 'CLASSROOM',
   },
   {
     url: ceremony2,
@@ -28,68 +18,85 @@ const officePhotos = [
   },
 ];
 
+function PhotoCard({ url, caption }: { url: string; caption: string }) {
+  return (
+    <article>
+      <div className="overflow-hidden rounded-2xl border-4 border-[var(--yellow)] shadow-lg">
+        <img src={url} alt={caption} className="aspect-[4/3] w-full object-cover sm:aspect-[16/10]" />
+      </div>
+      <p
+        style={{ fontFamily: 'var(--font-body)' }}
+        className="mt-4 text-center text-sm tracking-widest text-[var(--navy)]"
+      >
+        {caption}
+      </p>
+    </article>
+  );
+}
+
 export function OfficeSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const maxIndex = Math.max(0, officePhotos.length - 3);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => {
-        if (prev >= maxIndex) return 0;
-        return prev + 1;
-      });
+      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
     }, 4000);
 
     return () => clearInterval(interval);
   }, [maxIndex]);
 
   return (
-    <section className="py-[120px] px-8 bg-white">
-      <div className="max-w-[1440px] mx-auto">
+    <section className="bg-white px-5 py-16 sm:px-6 md:px-8 md:py-24 lg:py-[120px]">
+      <div className="mx-auto max-w-[1440px]">
         <h2
           style={{ fontFamily: 'var(--font-heading)' }}
-          className="text-5xl text-[var(--navy)] mb-16 text-center"
+          className="mb-10 text-center text-3xl text-[var(--navy)] sm:text-4xl md:mb-16 md:text-5xl"
         >
           Our Space
         </h2>
 
-        <div className="relative">
+        {/* Mobile & tablet — large swipeable images */}
+        <div className="-mx-5 overflow-x-auto px-5 pb-2 scrollbar-hide snap-x snap-mandatory lg:hidden">
+          <div className="flex gap-5">
+            {officePhotos.map((photo) => (
+              <div key={photo.caption} className="w-[min(88vw,420px)] shrink-0 snap-center">
+                <PhotoCard url={photo.url} caption={photo.caption} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop carousel */}
+        <div className="relative hidden lg:block">
           <div className="overflow-hidden">
             <div
               className="flex gap-6 transition-transform duration-700 ease-out"
               style={{ transform: `translateX(-${currentIndex * (100 / 3 + 2)}%)` }}
             >
               {officePhotos.map((photo, index) => (
-                <div key={index} className="flex-shrink-0" style={{ width: 'calc(33.333% - 16px)' }}>
-                  <div className="rounded-2xl overflow-hidden border-4 border-[var(--yellow)] shadow-lg">
-                    <img
-                      src={photo.url}
-                      alt={photo.caption}
-                      className="w-full aspect-[16/10] object-cover"
-                    />
-                  </div>
-                  <p
-                    style={{ fontFamily: 'var(--font-body)' }}
-                    className="text-center mt-4 text-[var(--navy)] tracking-widest text-sm"
-                  >
-                    {photo.caption}
-                  </p>
+                <div key={index} className="w-[calc(33.333%-16px)] shrink-0">
+                  <PhotoCard url={photo.url} caption={photo.caption} />
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="flex justify-center gap-2 mt-8">
-            {Array.from({ length: maxIndex + 1 }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  index === currentIndex ? 'bg-[var(--yellow)] scale-125' : 'bg-gray-300'
-                }`}
-              />
-            ))}
-          </div>
+          {maxIndex > 0 && (
+            <div className="mt-8 flex justify-center gap-2">
+              {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => setCurrentIndex(index)}
+                  aria-label={`Show slide ${index + 1}`}
+                  className={`h-3 w-3 rounded-full transition-all ${
+                    index === currentIndex ? 'scale-125 bg-[var(--yellow)]' : 'bg-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

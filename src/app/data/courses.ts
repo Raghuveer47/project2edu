@@ -53,7 +53,7 @@ export type Course = {
 export const COURSES: Course[] = [
   {
     id: 'c-programming',
-    name: 'C Programming (Entry Level)',
+    name: 'C Programming',
     category: 'Basic Courses',
     level: 'Beginner',
     duration: '6 weeks',
@@ -62,7 +62,7 @@ export const COURSES: Course[] = [
   },
   {
     id: 'java-entry',
-    name: 'Java (Entry Level)',
+    name: 'Java',
     category: 'Basic Courses',
     level: 'Beginner',
     duration: '8 weeks',
@@ -71,7 +71,7 @@ export const COURSES: Course[] = [
   },
   {
     id: 'python-entry',
-    name: 'Python (Entry Level)',
+    name: 'Python',
     category: 'Basic Courses',
     level: 'Beginner',
     duration: '8 weeks',

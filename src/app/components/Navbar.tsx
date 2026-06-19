@@ -7,7 +7,7 @@ const navLinks = [
   { to: '/about', label: 'About' },
   { to: '/services', label: 'Services' },
   { to: '/products', label: 'Products' },
-  { to: '/explore-courses', label: 'Courses' },
+  { to: '/training', label: ' Explore Courses' },
   { to: '/contact', label: 'Contact' },
 ];
 
@@ -70,6 +70,13 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          <Link
+            to="/explore-courses"
+            className="rounded-lg bg-[var(--yellow)] px-5 py-2.5 text-sm text-[var(--navy)] transition-colors hover:bg-[#E0B015] xl:text-base"
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            Enroll Now
+          </Link>
         </div>
 
         <button

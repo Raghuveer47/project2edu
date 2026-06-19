@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { Download, CheckCircle2 } from 'lucide-react';
-import { COURSE_CATEGORY_ORDER, getCourseByName, getCoursesByCategory, type CourseCategory } from '../data/courses';
+import { COURSES } from '../data/courses';
 import {
   downloadCurriculumForCourse,
   getCurriculumForCourse,
@@ -24,16 +24,11 @@ export function ExploreCoursesPage() {
   const [form, setForm] = useState<ApplicationFormData>(emptyForm);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
-  const [courseCategory, setCourseCategory] = useState<CourseCategory | ''>('');
 
   useEffect(() => {
     const courseParam = searchParams.get('course');
     if (courseParam) {
-      const matched = getCourseByName(courseParam);
-      if (matched) {
-        setCourseCategory(matched.category);
-        setForm((prev) => ({ ...prev, course: matched.name }));
-      }
+      setForm((prev) => ({ ...prev, course: courseParam }));
     }
   }, [searchParams]);
 
@@ -42,16 +37,10 @@ export function ExploreCoursesPage() {
     setError('');
   };
 
-  const handleCategoryChange = (category: CourseCategory | '') => {
-    setCourseCategory(category);
-    setForm((prev) => ({ ...prev, course: '' }));
-    setError('');
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.fullName.trim() || !form.email.trim() || !form.phone.trim() || !courseCategory || !form.course || !form.qualification.trim()) {
-      setError('Please fill in all required fields and select a course category and course.');
+    if (!form.fullName.trim() || !form.email.trim() || !form.phone.trim() || !form.course || !form.qualification.trim()) {
+      setError('Please fill in all required fields.');
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
@@ -64,120 +53,109 @@ export function ExploreCoursesPage() {
   };
 
   const selectCourse = (name: string) => {
-    const matched = getCourseByName(name);
-    if (!matched) return;
-    setCourseCategory(matched.category);
     update('course', name);
     document.getElementById('application-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const coursesInCategory = courseCategory ? getCoursesByCategory(courseCategory) : [];
-
   const selectedCurriculum = form.course ? getCurriculumForCourse(form.course) : undefined;
 
   return (
-    <div className="pt-20 min-h-screen bg-white">
-      <section className="py-16 px-6 md:px-8 bg-[var(--navy)]">
-        <div className="max-w-[1440px] mx-auto">
+    <div className="min-h-screen bg-white pt-20">
+      <section className="bg-[var(--navy)] px-6 py-16 md:px-8">
+        <div className="mx-auto max-w-[1440px]">
           <p
             style={{ fontFamily: 'var(--font-body)' }}
-            className="text-sm uppercase tracking-[0.2em] text-[var(--yellow)] mb-4"
+            className="mb-4 text-sm uppercase tracking-[0.2em] text-[var(--yellow)]"
           >
             Enroll Today
           </p>
           <h1
             style={{ fontFamily: 'var(--font-heading)' }}
-            className="text-4xl md:text-5xl text-white mb-4"
+            className="mb-4 text-4xl text-white md:text-5xl"
           >
             Explore Courses
           </h1>
-          <p style={{ fontFamily: 'var(--font-body)' }} className="text-white/85 text-lg max-w-2xl">
-            Choose a program and submit your application. Curriculum PDFs are available for select
-            advanced programs including Data Science & Analytics, Python, and AI & ML.
+          <p style={{ fontFamily: 'var(--font-body)' }} className="max-w-2xl text-lg text-white/85">
+            Choose a program and submit your application. Curriculum PDFs are available for Data
+            Science with AI, Core Python, and AI Mastery.
           </p>
         </div>
       </section>
 
-      <section className="py-16 px-6 md:px-8 bg-gray-50">
-        <div className="max-w-[1440px] mx-auto">
+      <section className="bg-gray-50 px-6 py-16 md:px-8">
+        <div className="mx-auto max-w-[1440px]">
           <h2
             style={{ fontFamily: 'var(--font-heading)' }}
-            className="text-3xl text-[var(--navy)] mb-8"
+            className="mb-8 text-3xl text-[var(--navy)]"
           >
             Available Programs
           </h2>
-          <div className="space-y-12">
-            {COURSE_CATEGORY_ORDER.map((category) => {
-              const courses = getCoursesByCategory(category);
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {COURSES.map((course) => {
+              const Icon = course.icon;
+              const selected = form.course === course.name;
               return (
-                <div key={category}>
+                <button
+                  key={course.id}
+                  type="button"
+                  onClick={() => selectCourse(course.name)}
+                  className={`rounded-xl border bg-white p-6 text-left transition-all ${
+                    selected
+                      ? 'border-[var(--yellow)] shadow-lg ring-2 ring-[var(--yellow)]/40'
+                      : 'border-gray-200 hover:border-[var(--yellow)] hover:shadow-md'
+                  }`}
+                >
+                  <Icon className="mb-3 h-9 w-9 text-[var(--navy)]" strokeWidth={1.5} />
                   <h3
                     style={{ fontFamily: 'var(--font-heading)' }}
-                    className="mb-5 text-2xl text-[var(--navy)]"
+                    className="mb-2 text-lg text-[var(--navy)]"
                   >
-                    {category}
+                    {course.name}
                   </h3>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {courses.map((course) => {
-                      const Icon = course.icon;
-                      const selected = form.course === course.name;
-                      return (
-                        <button
-                          key={course.id}
-                          type="button"
-                          onClick={() => selectCourse(course.name)}
-                          className={`rounded-xl border p-5 text-left transition-all sm:p-6 ${
-                            selected
-                              ? 'border-[var(--yellow)] shadow-lg ring-2 ring-[var(--yellow)]/40'
-                              : 'border-gray-200 bg-white hover:border-[var(--yellow)] hover:shadow-md'
-                          }`}
-                        >
-                          <Icon className="mb-3 h-9 w-9 text-[var(--navy)]" strokeWidth={1.5} />
-                          <h4
-                            style={{ fontFamily: 'var(--font-heading)' }}
-                            className="mb-2 text-lg text-[var(--navy)]"
-                          >
-                            {course.name}
-                          </h4>
-                          <p
-                            style={{ fontFamily: 'var(--font-body)' }}
-                            className="text-sm text-[var(--navy)]/65"
-                          >
-                            {course.summary}
-                          </p>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                  <p
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="mb-3 text-sm text-[var(--navy)]/65"
+                  >
+                    {course.summary}
+                  </p>
+                  <span
+                    className={`inline-block rounded-full px-3 py-1 text-xs ${
+                      course.level === 'Beginner'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-purple-100 text-purple-700'
+                    }`}
+                    style={{ fontFamily: 'var(--font-body)' }}
+                  >
+                    {course.duration} · {course.level}
+                  </span>
+                </button>
               );
             })}
           </div>
         </div>
       </section>
 
-      <section id="application-form" className="py-16 px-6 md:px-8 bg-white">
-        <div className="max-w-[1440px] mx-auto grid lg:grid-cols-5 gap-12">
+      <section id="application-form" className="bg-white px-6 py-16 md:px-8">
+        <div className="mx-auto grid max-w-[1440px] gap-12 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <h2
               style={{ fontFamily: 'var(--font-heading)' }}
-              className="text-3xl text-[var(--navy)] mb-4"
+              className="mb-4 text-3xl text-[var(--navy)]"
             >
               Application Form
             </h2>
             <p
               style={{ fontFamily: 'var(--font-body)' }}
-              className="text-[var(--navy)]/75 leading-relaxed mb-6"
+              className="mb-6 leading-relaxed text-[var(--navy)]/75"
             >
-              Complete the form below. First choose a <strong>course category</strong>, then pick your
-              course from that list.
+              Complete the form below and select your course.
               {selectedCurriculum ? (
                 <>
                   {' '}
                   After submit, the <strong>curriculum PDF for that course</strong> will download.
                 </>
               ) : (
-                <> Most courses can be applied for now; curriculum PDFs are available for select programs.</>
+                <> Full Stack programs can be applied for now; curriculum PDFs will be added later.</>
               )}
             </p>
             {selectedCurriculum ? (
@@ -185,35 +163,35 @@ export function ExploreCoursesPage() {
                 className="flex gap-3 text-[var(--navy)]/80"
                 style={{ fontFamily: 'var(--font-body)' }}
               >
-                <Download className="w-5 h-5 text-[var(--yellow)] shrink-0 mt-0.5" />
+                <Download className="mt-0.5 h-5 w-5 shrink-0 text-[var(--yellow)]" />
                 <span>You will receive: {selectedCurriculum.title} Curriculum</span>
               </p>
             ) : form.course ? (
-              <p className="text-[var(--navy)]/70 text-sm" style={{ fontFamily: 'var(--font-body)' }}>
+              <p className="text-sm text-[var(--navy)]/70" style={{ fontFamily: 'var(--font-body)' }}>
                 No curriculum PDF for this course yet. Submit your application and our team will
                 contact you.
               </p>
             ) : (
-              <p className="text-[var(--navy)]/70 text-sm" style={{ fontFamily: 'var(--font-body)' }}>
-                Select a course to apply. PDF download is available for Data Science & Analytics,
-                Python, and AI & Machine Learning.
+              <p className="text-sm text-[var(--navy)]/70" style={{ fontFamily: 'var(--font-body)' }}>
+                Select a course to apply. PDF download is available for Data Science, Core Python,
+                and AI Mastery.
               </p>
             )}
           </div>
 
           <div className="lg:col-span-3">
             {submitted ? (
-              <div className="bg-green-50 border border-green-200 rounded-2xl p-8">
-                <CheckCircle2 className="w-12 h-12 text-green-600 mb-4" />
+              <div className="rounded-2xl border border-green-200 bg-green-50 p-8">
+                <CheckCircle2 className="mb-4 h-12 w-12 text-green-600" />
                 <h3
                   style={{ fontFamily: 'var(--font-heading)' }}
-                  className="text-2xl text-[var(--navy)] mb-3"
+                  className="mb-3 text-2xl text-[var(--navy)]"
                 >
                   Application submitted successfully
                 </h3>
                 <p
                   style={{ fontFamily: 'var(--font-body)' }}
-                  className="text-[var(--navy)]/80 mb-6"
+                  className="mb-6 text-[var(--navy)]/80"
                 >
                   Thank you, {form.fullName}. Your application for{' '}
                   <strong>{form.course}</strong> was received.
@@ -226,16 +204,16 @@ export function ExploreCoursesPage() {
                     <button
                       type="button"
                       onClick={() => downloadCurriculumForCourse(form.course)}
-                      className="inline-flex items-center gap-2 bg-[var(--yellow)] text-[var(--navy)] px-5 py-2.5 rounded-lg hover:bg-[#E0B015] transition-colors text-sm"
+                      className="inline-flex items-center gap-2 rounded-lg bg-[var(--yellow)] px-5 py-2.5 text-sm text-[var(--navy)] transition-colors hover:bg-[#E0B015]"
                       style={{ fontFamily: 'var(--font-body)' }}
                     >
-                      <Download className="w-4 h-4" />
+                      <Download className="h-4 w-4" />
                       Download {getCurriculumForCourse(form.course)!.title} Curriculum
                     </button>
                   )}
                   <Link
                     to="/"
-                    className="inline-flex items-center px-5 py-2.5 text-[var(--navy)] hover:underline text-sm"
+                    className="inline-flex items-center px-5 py-2.5 text-sm text-[var(--navy)] hover:underline"
                     style={{ fontFamily: 'var(--font-body)' }}
                   >
                     Back to home
@@ -305,56 +283,34 @@ export function ExploreCoursesPage() {
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
                     <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
-                      Course Category *
-                    </label>
-                    <select
-                      required
-                      value={courseCategory}
-                      onChange={(e) => handleCategoryChange(e.target.value as CourseCategory | '')}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 focus:border-[var(--navy)] focus:outline-none"
-                    >
-                      <option value="">Select category</option>
-                      {COURSE_CATEGORY_ORDER.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
                       Course *
                     </label>
                     <select
                       required
                       value={form.course}
-                      disabled={!courseCategory}
                       onChange={(e) => update('course', e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 focus:border-[var(--navy)] focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 focus:border-[var(--navy)] focus:outline-none"
                     >
-                      <option value="">
-                        {courseCategory ? 'Select course' : 'Select a category first'}
-                      </option>
-                      {coursesInCategory.map((c) => (
+                      <option value="">Select a course</option>
+                      {COURSES.map((c) => (
                         <option key={c.id} value={c.name}>
                           {c.name}
                         </option>
                       ))}
                     </select>
                   </div>
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
-                    Qualification *
-                  </label>
-                  <input
-                    required
-                    value={form.qualification}
-                    onChange={(e) => update('qualification', e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[var(--navy)] focus:outline-none sm:max-w-md"
-                    placeholder="B.Tech / B.Sc / Diploma"
-                  />
+                  <div>
+                    <label className="mb-1.5 block text-sm text-[var(--navy)]" style={{ fontFamily: 'var(--font-body)' }}>
+                      Qualification *
+                    </label>
+                    <input
+                      required
+                      value={form.qualification}
+                      onChange={(e) => update('qualification', e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[var(--navy)] focus:outline-none"
+                      placeholder="B.Tech / B.Sc / Diploma"
+                    />
+                  </div>
                 </div>
 
                 <div>

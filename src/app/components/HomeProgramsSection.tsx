@@ -94,7 +94,7 @@ export function HomeProgramsSection() {
                         style={{ fontFamily: 'var(--font-body)' }}
                         className="text-xs text-[var(--navy)]/55"
                       >
-                        {course.duration} · {course.level}
+                        {course.level}
                       </p>
                     </Link>
                   ))}

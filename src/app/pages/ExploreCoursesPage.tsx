@@ -9,6 +9,14 @@ import {
   type ApplicationFormData,
 } from '../utils/courseApplicationPdf';
 
+const categoryColors: Record<string, { badge: string; border: string }> = {
+  'Basic Courses': { badge: 'bg-sky-100 text-sky-800', border: 'border-sky-200' },
+  'Advanced IT Courses': { badge: 'bg-blue-100 text-blue-800', border: 'border-blue-200' },
+  'Full Stack Courses': { badge: 'bg-orange-100 text-orange-800', border: 'border-orange-200' },
+  'Quick Courses': { badge: 'bg-rose-100 text-rose-800', border: 'border-rose-200' },
+  'Add on Courses': { badge: 'bg-emerald-100 text-emerald-800', border: 'border-emerald-200' },
+};
+
 const emptyForm: ApplicationFormData = {
   fullName: '',
   email: '',
@@ -109,14 +117,23 @@ export function ExploreCoursesPage() {
           <div className="space-y-12">
             {COURSE_CATEGORY_ORDER.map((category) => {
               const courses = getCoursesByCategory(category);
+              const colors = categoryColors[category];
               return (
                 <div key={category}>
-                  <h3
-                    style={{ fontFamily: 'var(--font-heading)' }}
-                    className="mb-5 text-2xl text-[var(--navy)]"
-                  >
-                    {category}
-                  </h3>
+                  <div className="mb-5 flex flex-wrap items-center gap-3">
+                    <h3
+                      style={{ fontFamily: 'var(--font-heading)' }}
+                      className="text-2xl text-[var(--navy)]"
+                    >
+                      {category}
+                    </h3>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${colors.badge}`}
+                      style={{ fontFamily: 'var(--font-body)' }}
+                    >
+                      {courses.length} courses
+                    </span>
+                  </div>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {courses.map((course) => {
                       const Icon = course.icon;
@@ -153,7 +170,7 @@ export function ExploreCoursesPage() {
                             }`}
                             style={{ fontFamily: 'var(--font-body)' }}
                           >
-                            {course.duration} · {course.level}
+                            {course.level}
                           </span>
                         </button>
                       );
@@ -296,7 +313,7 @@ export function ExploreCoursesPage() {
                       value={form.phone}
                       onChange={(e) => update('phone', e.target.value)}
                       className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[var(--navy)] focus:outline-none"
-                      placeholder="+91 XXXXX XXXXX"
+                      placeholder="+91 70931 82525"
                     />
                   </div>
                   <div>

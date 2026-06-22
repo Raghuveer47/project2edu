@@ -78,12 +78,15 @@ export function HomeProgramsSection() {
                   </span>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {courses.map((course) => (
+                  {courses.map((course) => {
+                    const Icon = course.icon;
+                    return (
                     <Link
                       key={course.id}
                       to={`/explore-courses?course=${encodeURIComponent(course.name)}`}
                       className="rounded-xl border border-gray-200 bg-white p-4 transition-all hover:border-[var(--yellow)] hover:shadow-md"
                     >
+                      <Icon className="mb-2 h-7 w-7 text-[var(--navy)]" strokeWidth={1.5} />
                       <p
                         style={{ fontFamily: 'var(--font-heading)' }}
                         className="mb-1 text-base font-medium text-[var(--navy)]"
@@ -97,7 +100,8 @@ export function HomeProgramsSection() {
                         {course.level}
                       </p>
                     </Link>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             );

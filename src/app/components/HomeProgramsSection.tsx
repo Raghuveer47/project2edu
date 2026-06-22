@@ -1,13 +1,21 @@
 import { Link } from 'react-router';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
-import { COURSES } from '../data/courses';
+import { COURSE_CATEGORY_ORDER, getCoursesByCategory } from '../data/courses';
 
 const highlights = [
   'Industry-aligned curriculum with live projects',
   'Mentorship from working professionals',
-  'Placement & internship support',
+  '100% placement assistance',
   'Flexible batches for students and working learners',
 ];
+
+const categoryColors: Record<string, string> = {
+  'Basic Courses': 'bg-sky-100 text-sky-800',
+  'Advanced IT Courses': 'bg-blue-100 text-blue-800',
+  'Full Stack Courses': 'bg-orange-100 text-orange-800',
+  'Quick Courses': 'bg-rose-100 text-rose-800',
+  'Add on Courses': 'bg-emerald-100 text-emerald-800',
+};
 
 export function HomeProgramsSection() {
   return (
@@ -25,15 +33,15 @@ export function HomeProgramsSection() {
               style={{ fontFamily: 'var(--font-heading)' }}
               className="text-4xl leading-tight text-[var(--navy)] md:text-5xl"
             >
-              Explore courses built for real careers
+              C2C Tech Solutions — IT Training Courses
             </h2>
           </div>
           <p
             style={{ fontFamily: 'var(--font-body)' }}
             className="text-lg leading-relaxed text-[var(--navy)]/75"
           >
-            Full Stack programs in Java, Python, MERN, Angular, .NET, and React — plus Data Science,
-            Core Python, and AI Mastery. Apply online; curriculum PDFs available for select programs.
+            Basic, advanced, full stack, quick, and add-on programs — from entry-level programming
+            to AI, cloud, DevOps, and placement support. Apply online today.
           </p>
         </div>
 
@@ -50,32 +58,48 @@ export function HomeProgramsSection() {
           ))}
         </ul>
 
-        <div className="mb-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {COURSES.map((course) => {
-            const Icon = course.icon;
+        <div className="mb-12 space-y-10">
+          {COURSE_CATEGORY_ORDER.map((category) => {
+            const courses = getCoursesByCategory(category);
             return (
-              <Link
-                key={course.id}
-                to={`/explore-courses?course=${encodeURIComponent(course.name)}`}
-                className="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:border-[var(--yellow)] hover:shadow-lg"
-              >
-                <Icon className="mb-4 h-9 w-9 text-[var(--navy)]" strokeWidth={1.5} />
-                <h3
-                  style={{ fontFamily: 'var(--font-heading)' }}
-                  className="mb-2 text-xl text-[var(--navy)] transition-colors group-hover:text-[var(--yellow)]"
-                >
-                  {course.name}
-                </h3>
-                <p
-                  style={{ fontFamily: 'var(--font-body)' }}
-                  className="mb-3 line-clamp-2 text-sm text-[var(--navy)]/65"
-                >
-                  {course.summary}
-                </p>
-                <span className="text-xs text-[var(--navy)]/50" style={{ fontFamily: 'var(--font-body)' }}>
-                  {course.duration} · {course.level}
-                </span>
-              </Link>
+              <div key={category}>
+                <div className="mb-4 flex flex-wrap items-center gap-3">
+                  <h3
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="text-2xl text-[var(--navy)]"
+                  >
+                    {category}
+                  </h3>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${categoryColors[category]}`}
+                    style={{ fontFamily: 'var(--font-body)' }}
+                  >
+                    {courses.length} courses
+                  </span>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {courses.map((course) => (
+                    <Link
+                      key={course.id}
+                      to={`/explore-courses?course=${encodeURIComponent(course.name)}`}
+                      className="rounded-xl border border-gray-200 bg-white p-4 transition-all hover:border-[var(--yellow)] hover:shadow-md"
+                    >
+                      <p
+                        style={{ fontFamily: 'var(--font-heading)' }}
+                        className="mb-1 text-base font-medium text-[var(--navy)]"
+                      >
+                        {course.name}
+                      </p>
+                      <p
+                        style={{ fontFamily: 'var(--font-body)' }}
+                        className="text-xs text-[var(--navy)]/55"
+                      >
+                        {course.duration} · {course.level}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
             );
           })}
         </div>

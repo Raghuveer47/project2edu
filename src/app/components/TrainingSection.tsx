@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
-import { COURSES } from '../data/courses';
+import { ArrowRight } from 'lucide-react';
+import { COURSE_CATEGORY_ORDER, getCoursesByCategory } from '../data/courses';
 
 export function TrainingSection() {
   return (
@@ -23,35 +24,37 @@ export function TrainingSection() {
             className="text-[var(--navy)] underline underline-offset-4 transition-colors hover:text-[var(--yellow)]"
             style={{ fontFamily: 'var(--font-body)' }}
           >
-            Apply online and download course PDFs →
+            Apply online and explore all courses →
           </Link>
         </p>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {COURSES.map((course) => {
-            const Icon = course.icon;
+          {COURSE_CATEGORY_ORDER.map((category) => {
+            const count = getCoursesByCategory(category).length;
             return (
               <Link
-                key={course.id}
-                to={`/explore-courses?course=${encodeURIComponent(course.name)}`}
-                className="rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-[var(--yellow)] hover:shadow-lg md:p-8"
+                key={category}
+                to="/explore-courses"
+                className="rounded-xl border border-gray-200 bg-gray-50 p-6 transition-all hover:-translate-y-1 hover:border-[var(--yellow)] hover:shadow-lg md:p-8"
               >
-                <Icon className="mb-4 h-10 w-10 text-[var(--navy)]" strokeWidth={1.5} />
                 <h3
                   style={{ fontFamily: 'var(--font-heading)' }}
                   className="mb-2 text-xl text-[var(--navy)]"
                 >
-                  {course.name}
+                  {category}
                 </h3>
+                <p
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  className="mb-4 text-sm text-[var(--navy)]/65"
+                >
+                  {count} programs available
+                </p>
                 <span
-                  className={`inline-block rounded-full px-3 py-1 text-sm ${
-                    course.level === 'Beginner'
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'bg-purple-100 text-purple-700'
-                  }`}
+                  className="inline-flex items-center gap-1 text-sm text-[var(--navy)]"
                   style={{ fontFamily: 'var(--font-body)' }}
                 >
-                  {course.level}
+                  View courses
+                  <ArrowRight className="h-4 w-4" />
                 </span>
               </Link>
             );
